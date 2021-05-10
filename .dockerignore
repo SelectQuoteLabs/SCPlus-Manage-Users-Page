@@ -1,0 +1,11 @@
+.dockerignore
+.git
+.gitignore
+.next
+Dockerfile*
+docker-compose*
+node_modules
+npm-debug.log
+build
+out
+nginx

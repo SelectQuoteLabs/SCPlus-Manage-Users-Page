@@ -1,0 +1,113 @@
+image: node:fermium
+
+options:
+  size: 2x
+
+definitions:
+  caches:
+    clientnode: client/node_modules
+  services:
+    docker:
+      memory: 7128
+
+# Setup reusable stuff
+testStep: &testStep
+  name: Run Automated Tests
+  caches:
+    - clientnode
+  script:
+    - echo "Running client test and build steps..."
+    - npm ci
+    - echo "Running the test and build steps"
+    - npm run build
+commonBuildAndDeploy: &commonBuildAndDeploy
+  name: Build & Deploy
+  image: tstrohmeier/awscli:3.6.4
+  size: 2x
+  script:
+    - export ENVIRONMENT=${ENVIRONMENT}
+    - apt-get update
+    - pip install -U pip setuptools
+    - pip install --no-cache-dir docker-compose
+    - pip install awscli --upgrade --user
+
+    # /* Uncomment if your application needs to inject a configuration file from s3 */
+    # - aws s3 cp s3://select-care-configs-${ENV}/configs/${SERVICE_NAME}/${ENVIRONMENT}.yaml config/
+    - eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email)
+
+    - export NAME=${ENV}_${BITBUCKET_BUILD_NUMBER}
+    - export APP_TAG=${AWS_REGISTRY_URL}:app_$NAME
+    - export NGINX_TAG=${AWS_REGISTRY_URL}:nginx_$NAME
+
+    - >
+      docker-compose
+      -f docker-compose.yml
+      --project-name ${SERVICE_NAME}
+      up
+      --build
+      --no-start
+
+    # TODO: DevOps Configures this section during their buildout ticket
+    # - docker tag {APP CONTAINER NAME GOES HERE} $APP_TAG
+    # - docker tag {NGINX CONTAINER TAG GOES HERE} $NGINX_TAG
+
+    - docker push $APP_TAG
+    - docker push $NGINX_TAG
+
+    # Interpolating ENV vars for values in the task-definition.json file
+    - sed -i -e "s|__LABEL__|${NAME}|g" task-definition.json
+    - sed -i -e "s|__EXECUTION_ROLE_ARN__|${EXECUTION_ROLE_ARN}|g" task-definition.json
+    - sed -i -e "s|__AWS_REGISTRY_URL__|${AWS_REGISTRY_URL}|g" task-definition.json
+    - >
+      aws ecs register-task-definition
+      --family ${SERVICE_NAME}
+      --cli-input-json file://task-definition.json
+    - >
+      aws ecs update-service
+      --service ${SERVICE_NAME}
+      --task-definition ${SERVICE_NAME}
+      --cluster ${CLUSTER}
+      --cli-input-json file://service-definition.json
+
+    # The ecs wait timeout is 10 minutes so sleep for 3m gives some padding
+    - sleep 180
+    - >
+      aws ecs wait services-stable
+      --services ${SERVICE_NAME}
+      --cluster ${CLUSTER}
+
+    # # Pass variables to next step
+    # - echo "${ENVIRONMENT}" > ./ENVIRONMENT.txt //Uncomment if you need to pass ENV var to additional steps
+  services:
+    - docker
+
+  artifacts:
+    # NOTE: This is the value of RELATIVE_JS_SOURCE_MAP_DIR, but we can't use environment variables in artifacts.
+    # - client/build/static/js/**
+    - ENVIRONMENT.txt
+
+pipelines:
+  default:
+    - step: *testStep
+  custom:
+    development:
+      - step:
+          deployment: development
+          <<: *commonBuildAndDeploy
+    uat:
+      - step:
+          deployment: uat
+          <<: *commonBuildAndDeploy
+  branches:
+    develop:
+      - step:
+          deployment: development
+          <<: *commonBuildAndDeploy
+    release:
+      - step:
+          deployment: uat
+          <<: *commonBuildAndDeploy
+    master:
+      - step:
+          deployment: production
+          <<: *commonBuildAndDeploy

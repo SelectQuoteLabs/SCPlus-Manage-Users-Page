@@ -1,0 +1,9 @@
+{
+  "cluster": "",
+  "deploymentConfiguration": {
+    "maximumPercent": 200,
+    "minimumHealthyPercent": 50
+  },
+  "forceNewDeployment": true,
+  "healthCheckGracePeriodSeconds": 30
+}

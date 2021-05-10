@@ -1,0 +1,72 @@
+{
+  "networkMode": "bridge",
+  "executionRoleArn": "__EXECUTION_ROLE_ARN__",
+  "containerDefinitions": [
+    {
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "cpu": 0,
+      "memoryReservation": 700,
+      "environment": [],
+      "image": "__AWS_REGISTRY_URL__:app___LABEL__",
+      "healthCheck": {
+        "retries": 3,
+        "command": ["true"],
+        "timeout": 5,
+        "interval": 60,
+        "startPeriod": 60
+      },
+      "essential": true,
+      "name": "app",
+      "portMappings": [
+        {
+          "hostPort": 0,
+          "protocol": "tcp",
+          "containerPort": 3000
+        }
+      ]
+    },
+    {
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "links": ["app"],
+      "cpu": 0,
+      "memoryReservation": 4,
+      "image": "__AWS_REGISTRY_URL__:nginx___LABEL__",
+      "healthCheck": {
+        "retries": 3,
+        "command": ["true"],
+        "timeout": 5,
+        "interval": 60,
+        "startPeriod": 60
+      },
+      "essential": true,
+      "name": "nginx",
+      "portMappings": [
+        {
+          "hostPort": 0,
+          "protocol": "tcp",
+          "containerPort": 80
+        }
+      ],
+      "volumesFrom": [
+        {
+          "sourceContainer": "app",
+          "readOnly": true
+        }
+      ]
+    }
+  ]
+}
