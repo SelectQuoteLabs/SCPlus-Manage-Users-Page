@@ -26,6 +26,14 @@ Create the `develop` branch
 
 > 💡 Ensure you have at least 2 branches, `develop` and `main`
 
+### DevOps Build Out Process
+
+Newly created applications require a DevOps Jira ticket to perform the "Build-Out" phase.
+
+During the build-out phase, DevOps will configure Bitbucket, the pipelines, and ensure successful deployments to all three environment sites.
+
+The ticket should be created using this [Jira ticket template](https://selectquote.atlassian.net/browse/DOP-2705).
+
 ### Local Tooling
 
 Install local tooling such as `husky` and `lint-staged`:

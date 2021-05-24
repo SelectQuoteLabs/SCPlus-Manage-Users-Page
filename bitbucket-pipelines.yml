@@ -36,23 +36,13 @@ commonBuildAndDeploy: &commonBuildAndDeploy
     - eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION} --no-include-email)
 
     - export NAME=${ENV}_${BITBUCKET_BUILD_NUMBER}
-    - export APP_TAG=${AWS_REGISTRY_URL}:app_$NAME
-    - export NGINX_TAG=${AWS_REGISTRY_URL}:nginx_$NAME
 
     - >
-      docker-compose
-      -f docker-compose.yml
-      --project-name ${SERVICE_NAME}
-      up
-      --build
-      --no-start
+      docker build
+      -t ${AWS_REGISTRY_URL}:${ENVIRONMENT}_${BITBUCKET_BUILD_NUMBER}
+      .
 
-    # TODO: DevOps Configures this section during their buildout ticket
-    # - docker tag {APP CONTAINER NAME GOES HERE} $APP_TAG
-    # - docker tag {NGINX CONTAINER TAG GOES HERE} $NGINX_TAG
-
-    - docker push $APP_TAG
-    - docker push $NGINX_TAG
+    - docker push ${AWS_REGISTRY_URL}:${ENVIRONMENT}_${BITBUCKET_BUILD_NUMBER}
 
     # Interpolating ENV vars for values in the task-definition.json file
     - sed -i -e "s|__LABEL__|${NAME}|g" task-definition.json
