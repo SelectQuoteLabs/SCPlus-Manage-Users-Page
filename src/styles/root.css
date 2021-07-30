@@ -13,10 +13,10 @@
   --color-orange: #f17c21;
   --color-granite: #5b5858;
 
-  --color-textSuccessGreen: #3C7107;
-  --color-textWarningYellow: #C67000;
-  --color-textErrorRed: #AD0010;
-  --color-textInfoBlue: #006CCB;
+  --color-textSuccessGreen: #3c7107;
+  --color-textWarningYellow: #c67000;
+  --color-textErrorRed: #ad0010;
+  --color-textInfoBlue: #006ccb;
 
   --color-brightYellow: #ff9f1c;
   --color-sienna: #c46c2a;
@@ -151,4 +151,10 @@ iframe {
 
 #root {
   height: inherit;
+}
+
+.side_nav {
+  height: 90vh;
+  display: flex;
+  flex-grow: 1;
 }

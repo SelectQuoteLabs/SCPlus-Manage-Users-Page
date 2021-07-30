@@ -38,8 +38,9 @@ export default function Header() {
 
   return (
     <SystemHeader
-      backgroundColor="var(--color-seniorOrange)"
-      productTitle="Skeleton UI"
+      backgroundColor="var(--color-cerulean)"
+      solutionTitle="Test"
+      productTitle="Life>Admin"
       headerComponents={
         <IconButtonMenu
           IconComponent={AccountIcon}
