@@ -41,6 +41,19 @@ const SideNavAvtars = ({
   handleCloseAddUserModal,
   open,
 }) => {
+  const [userName, setUserName] = React.useState('');
+  const [userComment, setUserComment] = React.useState('');
+
+  const onSubmitCreateUserData = async (event) => {
+    event.preventDefault();
+    const userData = { userName, userComment };
+    await fetch('http://localhost:8000/DUMMY_USERS_DATA', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData),
+    });
+  };
+
   const classes = useStyles();
   return (
     <>
@@ -70,27 +83,42 @@ const SideNavAvtars = ({
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <form noValidate autoComplete="off">
+            <form
+              noValidate
+              autoComplete="off"
+              onSubmit={onSubmitCreateUserData}
+            >
               <div className={classes.inputField}>
                 <TextField
-                  id="outlined-basic"
                   label="User Name"
-                  variant="outlined"
                   fullWidth
+                  placeholder="- -"
+                  value={userName}
+                  onChange={({ target }) => {
+                    setUserName(target.value);
+                  }}
                 />
               </div>
               <div className={classes.inputField}>
                 <TextField
-                  id="standard-multiline-static"
                   label="User Comment"
                   multiline
                   rows={5}
-                  variant="outlined"
                   fullWidth
+                  placeholder="- -"
+                  value={userComment}
+                  onChange={({ target }) => {
+                    setUserComment(target.value);
+                  }}
                 />
               </div>
               <div>
-                <Button variant="contained" color="primary">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  onClick={handleCloseAddUserModal}
+                >
                   Save
                 </Button>
               </div>
