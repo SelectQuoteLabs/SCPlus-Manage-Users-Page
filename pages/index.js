@@ -1,10 +1,10 @@
 import React from 'react';
-import { makeStyles, Typography } from '@material-ui/core';
+import { useQuery } from 'react-query';
+import { makeStyles, Typography, Button } from '@material-ui/core';
 import { Accordion, DataTable } from 'scplus-shared-components';
 import Head from 'next/head';
 import { getSession } from 'next-auth/client';
 import SideNavBar from '../src/components/SideNavBar';
-import { DUMMY_USERS_DATA } from '../src/constants/commonConstants';
 
 const useStyles = makeStyles({
   root: {
@@ -14,21 +14,38 @@ const useStyles = makeStyles({
   },
 });
 
-const dummyUsers = () => {
-  const dummyData = DUMMY_USERS_DATA.map(({ user, comment }) => {
-    return { name: user, comment };
-  });
-
-  return dummyData;
-};
-
-const onCellClicked = (value) => {
-  const { name, comment } = value.data;
-  alert([name, comment]);
+const getUsersData = async (page = 1) => {
+  const res = await fetch(`http://localhost:8000/DUMMY_USERS_DATA`);
+  const userData = await res.json();
+  return userData;
 };
 
 export default function Home() {
+  const [userName, setUserName] = React.useState('No user selected');
+  const [page, setPage] = React.useState(1);
+  const { data, status } = useQuery(
+    ['userData', page],
+    () => getUsersData(page),
+    {
+      keepPreviousData: true,
+    }
+  );
+
+  const dummyUsers = () => {
+    const dummyData = data?.map(({ userName, userComment }) => {
+      return { name: userName, comment: userComment };
+    });
+
+    return dummyData;
+  };
+
   const classes = useStyles();
+
+  const onCellClick = ({ data }) => {
+    const { name, comment } = data;
+    setUserName(name);
+  };
+
   return (
     <>
       <Head>
@@ -81,7 +98,7 @@ export default function Home() {
                 name: 'one',
                 subtitles: [
                   <Typography variant="h5" color="textSecondary">
-                    No User Selected
+                    {userName}
                   </Typography>,
                 ],
                 title: <Typography variant="h5">Manage Users:</Typography>,

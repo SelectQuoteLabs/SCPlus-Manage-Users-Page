@@ -1,23 +1,32 @@
+import React from 'react';
 import ForumIcon from '@material-ui/icons/Forum';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import PeopleIcon from '@material-ui/icons/People';
-import SideNavIcons from '@/components/SideNavIcons';
 import { SideNav, SideNavMiddle, SideNavTop } from 'scplus-shared-components';
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import SideNavIcons from '@/components/SideNavIcons';
+import SideNavAvtars from '@/components/SideNavAvtars';
 
 const SideNavBar = () => {
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpenAddUserModal = () => {
+    setOpen(true);
+  };
+
+  const handleCloseAddUserModal = () => {
+    setOpen(false);
+  };
   return (
     <SideNav>
       <SideNavTop>
-        <SideNavIcons>
-          <span
-            onClick={() => {
-              alert('I am clicked');
-            }}
-          >
-            A
-          </span>
-        </SideNavIcons>
+        <SideNavAvtars
+          avatarLetter="+"
+          title="Manage Users"
+          handleOpenAddUserModal={handleOpenAddUserModal}
+          handleCloseAddUserModal={handleCloseAddUserModal}
+          open={open}
+        />
       </SideNavTop>
       <SideNavMiddle>
         <SideNavIcons>
