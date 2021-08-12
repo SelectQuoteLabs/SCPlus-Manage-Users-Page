@@ -12,9 +12,7 @@ const getUsersData = async () => {
 const ManageUserAccordion = ({ handleSelectedUserChange }) => {
   const [userName, setUserName] = React.useState('No user selected');
 
-  const { data } = useQuery('userData', () => getUsersData(), {
-    keepPreviousData: true,
-  });
+  const { data } = useQuery('userData', getUsersData);
 
   const dummyUsers = () => {
     const dummyData = data?.map(({ userName, userComment }) => {
