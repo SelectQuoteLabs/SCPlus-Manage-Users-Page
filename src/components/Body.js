@@ -2,21 +2,14 @@ import PropTypes from 'prop-types';
 import {
   SQAdminPageLayout,
   SQAdminMainContent,
-  Snackbar,
-  useSnackbar,
 } from 'scplus-shared-components';
+import SideNavBar from './SideNavBar';
 
 export default function Body({ children }) {
-  const [snackbarState, { closeSnackbar }] = useSnackbar();
-
   return (
     <SQAdminPageLayout>
+      <SideNavBar />
       <SQAdminMainContent>{children}</SQAdminMainContent>
-      <Snackbar
-        position={{ vertical: 'top', horizontal: 'right' }}
-        snackbarState={snackbarState}
-        closeSnackbar={closeSnackbar}
-      />
     </SQAdminPageLayout>
   );
 }

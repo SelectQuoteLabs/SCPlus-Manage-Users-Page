@@ -1,4 +1,5 @@
 import React from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import { Avatar } from 'scplus-shared-components';
 import {
   IconButton,
@@ -7,9 +8,8 @@ import {
   Modal,
   Backdrop,
   Fade,
-  TextField,
-  Button,
 } from '@material-ui/core';
+import ManageUserForm from './ManageUserForm';
 
 const useStyles = makeStyles((theme) => ({
   iconButton: {
@@ -41,20 +41,32 @@ const SideNavAvtars = ({
   handleCloseAddUserModal,
   open,
 }) => {
-  const [userName, setUserName] = React.useState('');
-  const [userComment, setUserComment] = React.useState('');
+  const queryClient = useQueryClient();
 
-  const onSubmitCreateUserData = async (event) => {
-    event.preventDefault();
-    const userData = { userName, userComment };
+  const handlePostUserData = (data) => {
+    mutation.mutate(data);
+  };
+
+  const onSubmitCreateUserData = async (data) => {
     await fetch('http://localhost:8000/DUMMY_USERS_DATA', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData),
+      body: JSON.stringify(data),
     });
   };
 
+  const mutation = useMutation((data) => onSubmitCreateUserData(data), {
+    onSuccess: () => {
+      handleCloseAddUserModal();
+      queryClient.invalidateQueries('userData');
+    },
+    onError: () => {
+      console.log('Opps! Somthing went wrong.');
+    },
+  });
+
   const classes = useStyles();
+
   return (
     <>
       <IconButton
@@ -83,46 +95,7 @@ const SideNavAvtars = ({
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <form
-              noValidate
-              autoComplete="off"
-              onSubmit={onSubmitCreateUserData}
-            >
-              <div className={classes.inputField}>
-                <TextField
-                  label="User Name"
-                  fullWidth
-                  placeholder="- -"
-                  value={userName}
-                  onChange={({ target }) => {
-                    setUserName(target.value);
-                  }}
-                />
-              </div>
-              <div className={classes.inputField}>
-                <TextField
-                  label="User Comment"
-                  multiline
-                  rows={5}
-                  fullWidth
-                  placeholder="- -"
-                  value={userComment}
-                  onChange={({ target }) => {
-                    setUserComment(target.value);
-                  }}
-                />
-              </div>
-              <div>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  onClick={handleCloseAddUserModal}
-                >
-                  Save
-                </Button>
-              </div>
-            </form>
+            <ManageUserForm handlePostUserData={handlePostUserData} />
           </div>
         </Fade>
       </Modal>
