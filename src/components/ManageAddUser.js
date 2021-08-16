@@ -34,12 +34,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SideNavAvtars = ({
+const ManageAddUser = ({
   title,
   avatarLetter,
   handleOpenAddUserModal,
   handleCloseAddUserModal,
-  open,
+  isOpen,
 }) => {
   const queryClient = useQueryClient();
 
@@ -85,7 +85,7 @@ const SideNavAvtars = ({
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
-        open={open}
+        open={isOpen}
         onClose={handleCloseAddUserModal}
         closeAfterTransition
         BackdropComponent={Backdrop}
@@ -93,7 +93,7 @@ const SideNavAvtars = ({
           timeout: 500,
         }}
       >
-        <Fade in={open}>
+        <Fade in={isOpen}>
           <div className={classes.paper}>
             <ManageUserForm handlePostUserData={handlePostUserData} />
           </div>
@@ -103,4 +103,4 @@ const SideNavAvtars = ({
   );
 };
 
-export default SideNavAvtars;
+export default ManageAddUser;

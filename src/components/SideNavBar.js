@@ -5,27 +5,27 @@ import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import PeopleIcon from '@material-ui/icons/People';
 import { SideNav, SideNavMiddle, SideNavTop } from 'scplus-shared-components';
 import SideNavIcons from '@/components/SideNavIcons';
-import SideNavAvtars from '@/components/SideNavAvtars';
+import ManageAddUser from './ManageAddUser';
 
 const SideNavBar = () => {
-  const [open, setOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const handleOpenAddUserModal = () => {
-    setOpen(true);
+    setIsOpen(true);
   };
 
   const handleCloseAddUserModal = () => {
-    setOpen(false);
+    setIsOpen(false);
   };
   return (
     <SideNav>
       <SideNavTop>
-        <SideNavAvtars
+        <ManageAddUser
           avatarLetter="+"
           title="Manage Users"
           handleOpenAddUserModal={handleOpenAddUserModal}
           handleCloseAddUserModal={handleCloseAddUserModal}
-          open={open}
+          isOpen={isOpen}
         />
       </SideNavTop>
       <SideNavMiddle>

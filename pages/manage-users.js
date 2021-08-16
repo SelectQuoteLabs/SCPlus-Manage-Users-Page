@@ -1,10 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
-import ManageUserGrid from '../../src/components/ManageUserGrid';
+import ManageUserGrid from '../src/components/ManageUserGrid';
 
 const useStyles = makeStyles({
   root: {
-    height: '400px',
+    height: '100%',
     width: '100%',
     display: 'flex',
   },

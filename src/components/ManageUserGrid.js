@@ -1,42 +1,33 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import ManageUserAccordion from './ManageUserAccordion';
+import ManageFetchUserData from './ManageFetchUserData';
 import ManageUserForm from './ManageUserForm';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 0,
+const useStyles = makeStyles({
+  container: {
+    display: 'grid',
+    width: '100%',
+    height: '100%',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '12px',
   },
-  control: {
-    padding: theme.spacing(10),
-  },
-}));
+});
 
 export default function SpacingGrid() {
-  const [spacing, setSpacing] = React.useState(1);
   const [selectedUser, setSelectedUser] = React.useState(null);
 
   const classes = useStyles();
 
-  const handleSelectedUserChange = (user) => {
-    setSelectedUser(user);
+  const handleSelectedUserChange = (userData) => {
+    setSelectedUser(userData);
   };
 
   return (
-    <Grid container className={classes.root}>
-      <Grid item xs={12}>
-        <Grid container justifyContent="center" spacing={spacing}>
-          <Grid item md={6} sm={12} xs={12}>
-            <ManageUserAccordion
-              handleSelectedUserChange={handleSelectedUserChange}
-            />
-          </Grid>
-          <Grid item md={6} sm={12} xs={12}>
-            <ManageUserForm selectedUser={selectedUser} />
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+    <div className={classes.container}>
+      <ManageFetchUserData
+        handleSelectedUserChange={handleSelectedUserChange}
+      />
+      <ManageUserForm selectedUser={selectedUser} />
+    </div>
   );
 }
