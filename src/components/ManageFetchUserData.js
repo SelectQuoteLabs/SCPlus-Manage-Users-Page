@@ -1,15 +1,7 @@
 import React from 'react';
-import { useQuery } from 'react-query';
 import { Grid, makeStyles } from '@material-ui/core';
 import { DataTable, ComponentLoadingSpinner } from 'scplus-shared-components';
-
-const getUsersData = async () => {
-  const userData = await fetch(`http://localhost:8000/DUMMY_USERS_DATA`).then(
-    (res) => res.json()
-  );
-
-  return userData;
-};
+import { useFetchAllUsersData } from '../hooks/useFetchAllUsersData';
 
 const useStyles = makeStyles(() => ({
   tableContainer: {
@@ -18,7 +10,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const ManageFetchUserData = ({ handleSelectedUserChange }) => {
-  const { data, isLoading, isError } = useQuery('userData', getUsersData);
+  const { data, isLoading, isError } = useFetchAllUsersData();
 
   const classes = useStyles();
 

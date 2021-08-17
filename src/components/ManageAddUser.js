@@ -1,6 +1,6 @@
 import React from 'react';
-import { useMutation, useQueryClient } from 'react-query';
-import { Avatar } from 'scplus-shared-components';
+import { Avatar, ComponentLoadingSpinner } from 'scplus-shared-components';
+import { SQFormDialog, SQFormTextField } from '@selectquotelabs/sqform';
 import {
   IconButton,
   Tooltip,
@@ -10,6 +10,7 @@ import {
   Fade,
 } from '@material-ui/core';
 import ManageUserForm from './ManageUserForm';
+import { useAddUserData } from '../hooks/useAddUserData';
 
 const useStyles = makeStyles((theme) => ({
   iconButton: {
@@ -20,12 +21,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  paper: {
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  },
   inputField: {
     display: 'flex',
     alignItems: 'center',
@@ -34,6 +29,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const INITIAL_VALUES = {
+  userName: '',
+  userComment: '',
+};
+
 const ManageAddUser = ({
   title,
   avatarLetter,
@@ -41,29 +41,12 @@ const ManageAddUser = ({
   handleCloseAddUserModal,
   isOpen,
 }) => {
-  const queryClient = useQueryClient();
+  const addUserData = useAddUserData();
 
-  const handlePostUserData = (data) => {
-    mutation.mutate(data);
+  const handlePostUserData = async (data) => {
+    await addUserData.mutateAsync(data);
+    handleCloseAddUserModal();
   };
-
-  const onSubmitCreateUserData = async (data) => {
-    await fetch('http://localhost:8000/DUMMY_USERS_DATA', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-  };
-
-  const mutation = useMutation((data) => onSubmitCreateUserData(data), {
-    onSuccess: () => {
-      handleCloseAddUserModal();
-      queryClient.invalidateQueries('userData');
-    },
-    onError: () => {
-      console.log('Opps! Somthing went wrong.');
-    },
-  });
 
   const classes = useStyles();
 
@@ -75,30 +58,38 @@ const ManageAddUser = ({
       >
         <div>
           <Tooltip title={title}>
-            <Avatar isInverted placement="right" arrow={true}>
+            <Avatar isInverted={false} placement="right" arrow={true}>
               {avatarLetter.toUpperCase()}
             </Avatar>
           </Tooltip>
         </div>
       </IconButton>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        className={classes.modal}
-        open={isOpen}
+      <SQFormDialog
+        initialValues={INITIAL_VALUES}
+        onSave={handlePostUserData}
+        isOpen={isOpen}
         onClose={handleCloseAddUserModal}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
+        title={'Add User'}
+        enableReinitialize
       >
-        <Fade in={isOpen}>
-          <div className={classes.paper}>
-            <ManageUserForm handlePostUserData={handlePostUserData} />
-          </div>
-        </Fade>
-      </Modal>
+        {addUserData.isLoading ? (
+          <ComponentLoadingSpinner message="Loading" />
+        ) : (
+          <>
+            <SQFormTextField
+              name="userName"
+              label="User Name"
+              size={12}
+              maxCharacters={15}
+            />
+            <SQFormTextField
+              name="userComment"
+              label="User Comment"
+              size={12}
+            />
+          </>
+        )}
+      </SQFormDialog>
     </>
   );
 };

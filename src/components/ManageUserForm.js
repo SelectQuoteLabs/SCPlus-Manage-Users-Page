@@ -1,7 +1,11 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { SQFormTextField, SQForm, SQFormButton } from '@selectquotelabs/sqform';
-import { Grid, Card } from '@material-ui/core';
+import {
+  SQFormTextField,
+  SQFormScrollableCard,
+  SQFormButton,
+} from '@selectquotelabs/sqform';
+import { Grid } from '@material-ui/core';
 
 const validationSchema = {
   userName: Yup.string().required('Required'),
@@ -24,27 +28,23 @@ const ManageUserForm = ({ selectedUser, handlePostUserData }) => {
   };
 
   return (
-    <Card style={{ padding: 16 }}>
-      <SQForm
-        initialValues={MOCK_DATA}
-        onSubmit={handleUserPostSubmit}
-        enableReinitialize={true}
-        validationSchema={validationSchema}
-      >
-        <SQFormTextField
-          name="userName"
-          label="User Name"
-          size={12}
-          maxCharacters={10}
-        />
-        <SQFormTextField name="userComment" label="User Comment" size={12} />
-        <Grid item sm={12}>
-          <Grid container justify="space-between">
-            <SQFormButton>Submit</SQFormButton>
-          </Grid>
-        </Grid>
-      </SQForm>
-    </Card>
+    <SQFormScrollableCard
+      title={'Update User'}
+      initialValues={MOCK_DATA}
+      onSubmit={handleUserPostSubmit}
+      enableReinitialize={true}
+      validationSchema={validationSchema}
+      isSelfBounding={true}
+      shouldRenderHelperText={false}
+    >
+      <SQFormTextField
+        name="userName"
+        label="User Name"
+        size={12}
+        maxCharacters={15}
+      />
+      <SQFormTextField name="userComment" label="User Comment" size={12} />
+    </SQFormScrollableCard>
   );
 };
 
