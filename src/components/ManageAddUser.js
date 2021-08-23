@@ -9,8 +9,8 @@ import {
   Backdrop,
   Fade,
 } from '@material-ui/core';
-import ManageUserForm from './ManageUserForm';
-import { useAddUserData } from '../hooks/useAddUserData';
+import ManageUserDetails from './ManageUserDetails';
+import { useCreateUser } from '../hooks/useCreateUser';
 
 const useStyles = makeStyles((theme) => ({
   iconButton: {
@@ -41,10 +41,9 @@ const ManageAddUser = ({
   handleCloseAddUserModal,
   isOpen,
 }) => {
-  const addUserData = useAddUserData();
-
-  const handlePostUserData = async (data) => {
-    await addUserData.mutateAsync(data);
+  const addUserData = useCreateUser();
+  const handlePostUserData = (data) => {
+    addUserData.mutateAsync(data);
     handleCloseAddUserModal();
   };
 

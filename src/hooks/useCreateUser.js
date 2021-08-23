@@ -8,7 +8,7 @@ const onSubmitCreateUserData = async (userData) => {
   });
 };
 
-export const useAddUserData = () => {
+export const useCreateUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation((userData) => onSubmitCreateUserData(userData), {

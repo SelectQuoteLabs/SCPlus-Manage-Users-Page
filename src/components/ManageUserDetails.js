@@ -6,19 +6,27 @@ import {
   SQFormButton,
 } from '@selectquotelabs/sqform';
 import { Grid } from '@material-ui/core';
+import { useUpdateUser } from '../hooks/useUpdateUser';
+import { useCreateDialog } from '../context/CreateDialogContext';
 
 const validationSchema = {
   userName: Yup.string().required('Required'),
   userComment: Yup.string().required('Required'),
 };
 
-const ManageUserForm = ({ selectedUser, handlePostUserData }) => {
+const ManageUserDetails = ({ selectedUser, handlePostUserData }) => {
+  const [getDialogState, { closeDialog }] = useCreateDialog();
+  const isCreateDialogOpen = getDialogState('/manage-users');
+  const { id: userID } = selectedUser || {};
+  const updateUser = useUpdateUser(userID);
+  const handleUpdateUser = (data) => {
+    updateUser.mutateAsync(data);
+  };
   const handleUserPostSubmit = (data) => {
     if (handlePostUserData) {
       handlePostUserData(data);
-      console.log('submited', data);
     } else {
-      console.log('Updated: ', data);
+      handleUpdateUser(data);
     }
   };
 
@@ -36,6 +44,8 @@ const ManageUserForm = ({ selectedUser, handlePostUserData }) => {
       validationSchema={validationSchema}
       isSelfBounding={true}
       shouldRenderHelperText={false}
+      isOpen={isCreateDialogOpen}
+      closeDialog={closeDialog}
     >
       <SQFormTextField
         name="userName"
@@ -48,4 +58,4 @@ const ManageUserForm = ({ selectedUser, handlePostUserData }) => {
   );
 };
 
-export default ManageUserForm;
+export default ManageUserDetails;

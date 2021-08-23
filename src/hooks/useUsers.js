@@ -8,6 +8,6 @@ const getUsersData = async () => {
   return userData;
 };
 
-export const useFetchAllUsersData = () => {
+export const useUsers = () => {
   return useQuery('userData', getUsersData);
 };

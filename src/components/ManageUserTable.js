@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, makeStyles } from '@material-ui/core';
 import { DataTable, ComponentLoadingSpinner } from 'scplus-shared-components';
-import { useFetchAllUsersData } from '../hooks/useFetchAllUsersData';
+import { useUsers } from '../hooks/useUsers';
 
 const useStyles = makeStyles(() => ({
   tableContainer: {
@@ -9,13 +9,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const ManageFetchUserData = ({ handleSelectedUserChange }) => {
-  const { data, isLoading, isError } = useFetchAllUsersData();
+const ManageUserTable = ({ handleSelectUser }) => {
+  const { data, isLoading, isError } = useUsers();
 
   const classes = useStyles();
 
   const onCellClick = (userData) => {
-    handleSelectedUserChange(userData);
+    handleSelectUser(userData);
   };
 
   const columnsWithCellRender = [
@@ -52,4 +52,4 @@ const ManageFetchUserData = ({ handleSelectedUserChange }) => {
   );
 };
 
-export default ManageFetchUserData;
+export default ManageUserTable;
