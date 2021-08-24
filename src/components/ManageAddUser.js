@@ -38,7 +38,10 @@ const ManageAddUser = ({ title, avatarLetter, isOpen, closeDialog }) => {
   const addUserData = useCreateUser();
   const handlePostUserData = async (data) => {
     await addUserData.mutateAsync(data);
-    closeDialog();
+
+    if (addUserData.isSuccess) {
+      closeDialog();
+    }
   };
 
   const classes = useStyles();

@@ -6,6 +6,7 @@ import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import PeopleIcon from '@material-ui/icons/People';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import Tooltip from '@material-ui/core/Tooltip';
 import {
   SideNav,
   SideNavMiddle,
@@ -45,15 +46,15 @@ const SideNavBar = () => {
         />
       </SideNavTop>
       <SideNavMiddle>
-        <IconButton
-          IconComponent={() => (
-            <Avatar isInverted={false}>
-              <Link href="/manage-users">
+        <Link href="/manage-users">
+          <a style={{ textDecoration: 'none' }}>
+            <Tooltip title="Manage Users" placement="right" arrow={true}>
+              <Avatar isInverted isFocused={pathname === '/manage-users'}>
                 <PeopleIcon />
-              </Link>
-            </Avatar>
-          )}
-        />
+              </Avatar>
+            </Tooltip>
+          </a>
+        </Link>
       </SideNavMiddle>
     </SideNav>
   );
