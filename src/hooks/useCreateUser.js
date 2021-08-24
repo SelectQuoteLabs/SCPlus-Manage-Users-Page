@@ -12,11 +12,11 @@ export const useCreateUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation((userData) => onSubmitCreateUserData(userData), {
-    onSuccess: () => {
-      queryClient.invalidateQueries('userData');
-    },
     onError: () => {
       console.log('Opps! Somthing went wrong.');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries('userData');
     },
   });
 };

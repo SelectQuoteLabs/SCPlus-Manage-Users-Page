@@ -34,40 +34,22 @@ const INITIAL_VALUES = {
   userComment: '',
 };
 
-const ManageAddUser = ({
-  title,
-  avatarLetter,
-  handleOpenAddUserModal,
-  handleCloseAddUserModal,
-  isOpen,
-}) => {
+const ManageAddUser = ({ title, avatarLetter, isOpen, closeDialog }) => {
   const addUserData = useCreateUser();
-  const handlePostUserData = (data) => {
-    addUserData.mutateAsync(data);
-    handleCloseAddUserModal();
+  const handlePostUserData = async (data) => {
+    await addUserData.mutateAsync(data);
+    closeDialog();
   };
 
   const classes = useStyles();
 
   return (
     <>
-      <IconButton
-        className={classes.iconButton}
-        onClick={handleOpenAddUserModal}
-      >
-        <div>
-          <Tooltip title={title}>
-            <Avatar isInverted={false} placement="right" arrow={true}>
-              {avatarLetter.toUpperCase()}
-            </Avatar>
-          </Tooltip>
-        </div>
-      </IconButton>
       <SQFormDialog
         initialValues={INITIAL_VALUES}
         onSave={handlePostUserData}
         isOpen={isOpen}
-        onClose={handleCloseAddUserModal}
+        onClose={closeDialog}
         title={'Add User'}
         enableReinitialize
       >
