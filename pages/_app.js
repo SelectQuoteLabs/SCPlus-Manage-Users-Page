@@ -12,6 +12,7 @@ import {
   SnackbarProvider,
 } from 'scplus-shared-components';
 import { useRouter } from 'next/router';
+import { CreateDialogProvider } from '../src/context/CreateDialogContext';
 import Header from '@/components/Header';
 import Body from '@/components/Body';
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -37,15 +38,17 @@ function App({ Component, pageProps }) {
           <SnackbarProvider>
             <LocalizationProvider dateAdapter={MomentAdapter} locale={'en'}>
               <MuiThemeProvider theme={muiTheme}>
-                {router.pathname === '/signin' ? (
-                  <Component {...pageProps} />
-                ) : (
-                  <SQAdminLayout HeaderComponent={Header}>
-                    <Body>
-                      <Component {...pageProps} />
-                    </Body>
-                  </SQAdminLayout>
-                )}
+                <CreateDialogProvider>
+                  {router.pathname === '/signin' ? (
+                    <Component {...pageProps} />
+                  ) : (
+                    <SQAdminLayout HeaderComponent={Header}>
+                      <Body>
+                        <Component {...pageProps} />
+                      </Body>
+                    </SQAdminLayout>
+                  )}
+                </CreateDialogProvider>
               </MuiThemeProvider>
             </LocalizationProvider>
           </SnackbarProvider>
